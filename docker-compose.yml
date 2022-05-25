@@ -1,0 +1,38 @@
+---
+services: 
+
+  mysql: 
+    image: mysql
+    platform: linux/x86_64
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    env_file: mysql/default.env
+    cap_add:
+      - SYS_NICE
+    expose:
+      - 3306
+
+  redis:
+    image: redis
+    expose:
+      - 6379
+
+
+  fleet: 
+    image: fleetdm/fleet
+    depends_on:
+      - mysql
+      - redis
+      - certs
+    platform: linux/x86_64
+    command: sh -c "/usr/bin/fleet prepare db --no-prompt && /usr/bin/fleet serve"
+    env_file: fleet/default.env
+    ports: 
+      - 8080:8412
+    volumes:
+      - ./fleet:/fleet/
+      - ./fleet/logs:/logs
+      - ./fleet/vulndb:/vulndb
+volumes: 
+  data01:
+    driver: local
