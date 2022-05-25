@@ -2,6 +2,8 @@
 
 fleet/*
 !fleet/default.env
+!fleet/tmp
+
 
 mysql/*
 !mysql/default.env
