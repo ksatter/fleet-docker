@@ -22,6 +22,12 @@ All data is stored on the host machine in the folder for the service it is assoc
 as long as the local folder is not deleted. Can be changed in docker-compose.yml
 
 
+## Usage
+
+- Clone this repository
+- Move to desired location
+- From root of repo, run "docker compose up"
+
 ## TODO
 
 - Add TLS
