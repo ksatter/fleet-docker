@@ -5,7 +5,6 @@ services:
 
   mysql: 
     image: mysql
-    platform: linux/x86_64
     volumes:
       - ./mysql/data:/var/lib/mysql
     env_file: mysql/default.env
@@ -20,7 +19,6 @@ services:
     depends_on:
       - mysql
       - redis
-    platform: linux/x86_64
     command: sh -c "/usr/bin/fleet prepare db --no-prompt && /usr/bin/fleet serve"
     env_file: fleet/default.env
     volumes:
