@@ -28,6 +28,8 @@ as long as the local folder is not deleted. Can be changed in docker-compose.yml
 - Move to desired location
 - From root of repo, run "docker compose up"
 
+Please make sure to edit `fleet/default.env` and `mysql/default.env` and replace the example passwords with secure ones. Especially if you intend to make your instance publicly available.
+
 ## TLS
 
 This repository includes two basic examples on how to enable TLS based on `traefik`.
@@ -54,7 +56,7 @@ nano -w docker-compose-traefik-standalone.yml
 # Edit the traefik config file and replace `email@example.com` with your email address
 nano -w config/traefik.toml
 # Launch the instance
-docker-compose -f docker-compose-traefik-standalone.yml up -d --force-recreate && docker-compose logs -f
+docker-compose -f docker-compose-traefik-standalone.yml up -d --force-recreate && docker-compose -f docker-compose-traefik-standalone.yml logs -f
 ```
 
 ### External traefik stack
@@ -69,9 +71,8 @@ Once your `traefik` instance is up and running, there are only a few steps requi
 mkdir fleet/{logs,vulndb} mysql/data
 # Fix permissions
 sudo chmod -R o+w fleet/{logs,vulndb} mysql/data
-chmod 600 config/ACME/acme.json
 # Edit the docker-compose file and replace `fleet.example.com` with the DNS record that targets your host
 nano -w docker-compose-traefik.yml
 # Launch the instance
-docker-compose -f docker-compose-traefik.yml up -d --force-recreate && docker-compose logs -f
+docker-compose -f docker-compose-traefik.yml up -d --force-recreate && docker-compose -f docker-compose-traefik.yml logs -f
 ```
