@@ -1,0 +1,43 @@
+---
+version: '3.7'
+
+services: 
+
+  mysql: 
+    image: mysql
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    env_file: mysql/default.env
+    cap_add:
+      - SYS_NICE
+
+  redis:
+    image: redis
+
+  fleet: 
+    image: fleetdm/fleet
+    depends_on:
+      - mysql
+      - redis
+    command: sh -c "/usr/bin/fleet prepare db --no-prompt && /usr/bin/fleet serve"
+    env_file: fleet/default.env
+    volumes:
+      - ./fleet:/fleet/
+      - ./fleet/logs:/logs
+      - ./fleet/vulndb:/vulndb
+    labels:
+      traefik.enable: true
+      traefik.http.routers.fleet.entrypoints: "websecure"
+      traefik.http.routers.fleet.rule: "Host(`fleet.apedv.com`)"
+      traefik.http.services.fleet.loadbalancer.server.port: "8412"
+      traefik.http.routers.fleet.tls: true
+      traefik.http.routers.fleet.tls.certresolver: "default"
+    networks:
+      - traefik_proxy
+      - default
+
+networks:
+  traefik_proxy:
+    external: true
+  default:
+    driver: bridge
