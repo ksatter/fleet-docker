@@ -1,8 +1,8 @@
-.DS_Store
-
-fleet/*
-!fleet/default.env
-!fleet/tmp
-
-mysql/*
+/mysql/*
 !mysql/default.env
+/fleet/*
+!/fleet/default.env
+
+
+
+

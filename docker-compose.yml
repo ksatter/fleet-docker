@@ -1,6 +1,36 @@
 ---
-services: 
+# networks:
+#   fleet:
 
+volumes: 
+  data01:
+    driver: local
+
+services:
+  fleet: 
+    image: fleetdm/fleet
+    depends_on:
+      - mysql
+      - redis
+      - traefik
+    platform: linux/x86_64
+    command: sh -c "/usr/bin/fleet prepare db --no-prompt && /usr/bin/fleet serve"
+    env_file: fleet/default.env
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.myapp.tls=true
+      - traefik.http.routers.myapp.rule=Host("fleet.docker.localhost") 
+
+    # networks:
+    #   - fleet
+    expose: 
+      - 8412
+    volumes:
+      - ./fleet:/fleet/
+      - ./fleet/logs:/logs
+      - ./fleet/vulndb:/vulndb
+      - ./certs:/certs
+  
   mysql: 
     image: mysql
     platform: linux/x86_64
@@ -11,27 +41,37 @@ services:
       - SYS_NICE
     expose:
       - 3306
+    # networks:
+    #   - fleet
 
   redis:
     image: redis
     expose:
       - 6379
+    # networks:
+    #   - fleet
 
-
-  fleet: 
-    image: fleetdm/fleet
-    depends_on:
-      - mysql
-      - redis
-    platform: linux/x86_64
-    command: sh -c "/usr/bin/fleet prepare db --no-prompt && /usr/bin/fleet serve"
-    env_file: fleet/default.env
-    ports: 
-      - 8080:8412
+  proxy:
+    image: traefik:v2.6
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+    # networks:
+    #   - fleet
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik=true"
+      - traefik.docker=true
     volumes:
-      - ./fleet:/fleet/
-      - ./fleet/logs:/logs
-      - ./fleet/vulndb:/vulndb
-volumes: 
-  data01:
-    driver: local
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/config.yml:/etc/traefik/config.yml:ro      
+      - ./certs:/certs/
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  whoami:
+    # A container that exposes an API to show its IP address
+    image: traefik/whoami
+    labels:
+      - "traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)"
+
