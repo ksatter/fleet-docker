@@ -1,0 +1,17 @@
+version: '3.7'
+
+networks:
+  fleet:
+
+services:
+  host-1:
+    image: ubuntu:latest
+    tty: true
+    stdin_open: true
+    depends_on:
+      - fleet
+    command: tail -f /osquery/install.sh
+    volumes:
+      - ./osquery:/osquery
+    networks:
+      - fleet

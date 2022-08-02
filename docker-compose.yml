@@ -1,28 +1,27 @@
 ---
-# networks:
-#   fleet:
-
 volumes: 
   data01:
     driver: local
+
+networks:
+  fleet:
 
 services:
   fleet: 
     image: fleetdm/fleet
     depends_on:
       - mysql
-      - redis
-      - traefik
     platform: linux/x86_64
     command: sh -c "/usr/bin/fleet prepare db --no-prompt && /usr/bin/fleet serve"
     env_file: fleet/default.env
     labels:
       - traefik.enable=true
-      - traefik.http.routers.myapp.tls=true
-      - traefik.http.routers.myapp.rule=Host("fleet.docker.localhost") 
-
-    # networks:
-    #   - fleet
+      - "traefik.http.services.fleet.loadbalancer.server.port=8412"
+      - "traefik.http.routers.fleet.entrypoints=https"
+      - "traefik.http.routers.fleet-tls.tls.domains[0].main=fleet.traefik.me"
+      - "traefik.http.routers.fleet-tls.tls.domains[0].sans=fleet-*.traefik.me"
+    networks:
+      - fleet
     expose: 
       - 8412
     volumes:
@@ -33,6 +32,8 @@ services:
   
   mysql: 
     image: mysql
+    depends_on:
+      - traefik
     platform: linux/x86_64
     volumes:
       - ./mysql/data:/var/lib/mysql
@@ -41,37 +42,49 @@ services:
       - SYS_NICE
     expose:
       - 3306
-    # networks:
-    #   - fleet
+    networks:
+      - fleet
 
   redis:
     image: redis
+    depends_on:
+      - mysql
     expose:
       - 6379
-    # networks:
-    #   - fleet
-
-  proxy:
-    image: traefik:v2.6
+    networks:
+      - fleet
+   
+  traefik:
+    restart: unless-stopped
+    image: traefik:v2.0.2
     ports:
-      - 80:80
-      - 443:443
-      - 8080:8080
-    # networks:
-    #   - fleet
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.traefik=true"
-      - traefik.docker=true
-    volumes:
-      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
-      - ./traefik/config.yml:/etc/traefik/config.yml:ro      
-      - ./certs:/certs/
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
 
-  whoami:
-    # A container that exposes an API to show its IP address
-    image: traefik/whoami
-    labels:
-      - "traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)"
+    volumes:
+      - ./traefik:/etc/traefik
+      - ./certs:/certs
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - fleet
+  # filebeat:
+  #   image: docker.elastic.co/beats/filebeat:8.3.3
+  #   networks:
+  #     - fleetß
+  #   volumes:
+  #     - ./fleet/logs:/fleet/logs
+  #     - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+
+
+
+  # helper:
+  #   image: alpine
+  #   command: sh -c "cd /etc/ssl/traefik
+  #     && wget traefik.me/cert.pem -O cert.pem
+  #     && wget traefik.me/privkey.pem -O privkey.pem"
+  #   volumes:
+  #     - ./certs:/etc/ssl/traefik
 

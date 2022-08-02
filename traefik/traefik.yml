@@ -1,33 +1,25 @@
-serversTransport:
-  insecureSkipVerify: true
-global:
-  sendAnonymousUsage: false
+
+logLevel: INFO
+accessLog:
+  filepath: /etc/traefik/traefik.log
+  format: json
 
 api:
-  dashboard: true
   insecure: true
-
-providers:
-  docker:
-    endpoint: "unix:///var/run/docker.sock"
-    watch: true
-    exposedByDefault: false
-
-  file:
-    filename: /etc/traefik/config.yml
-    watch: true
-
-log:
-  level: INFO
-  format: common
+  dashboard: true
 
 entryPoints:
   http:
     address: ":80"
-    http:
-      redirections:
-        entryPoint:
-          to: https
-          scheme: https
   https:
     address: ":443"
+
+providers:
+  file:
+    filename: /etc/traefik/config.yml
+  docker:
+    endpoint: unix:///var/run/docker.sock
+    watch: true
+    exposedByDefault: false
+    network: fleet
+    defaultRule: "HostRegexp(`{{ index .Labels \"com.docker.compose.service\"}}.traefik.me`,`{{ index .Labels \"com.docker.compose.service\"}}-{dashed-ip:.*}.traefik.me`)"

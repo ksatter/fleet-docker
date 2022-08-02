@@ -1,0 +1,101 @@
+version: '3.7'
+
+networks:
+  fleet:
+    name: fleet
+
+services:
+  ubuntu20-osquery:
+    env_file:
+      - ./osquery/.env
+    depends_on:
+      - fleet
+    image: "osquery/osquery:4.6.0-ubuntu20.04"
+    volumes:
+      - ./certs/cert.pem:/etc/osquery/fleet.crt
+      - ./osquery:/osquery
+    
+    command: osqueryd --flagfile=/osquery/osquery.flags --tls_hostname=fleet.traefik.me
+    ulimits:
+      core:
+        hard:  1000000000
+        soft:  1000000000
+    networks:
+      - fleet
+
+  # ubuntu18-osquery:
+  #   image: "osquery/osquery:4.6.0-ubuntu18.04"
+  #   volumes:
+  #     - ./certs/cert.pem:/etc/osquery/fleet.crt
+  #     - ./osquery/example_osquery.flags:/etc/osquery/osquery.flags
+  #   command: osqueryd --flagfile=/etc/osquery/osquery.flags --tls_hostname=fleet.traefik.me
+  #   ulimits:
+  #     core:
+  #       hard:  1000000000
+  #       soft:  1000000000
+  #   networks:
+  #     - fleet
+
+  # ubuntu16-osquery:
+  #   image: "osquery/osquery:4.6.0-ubuntu16.04"
+  #   volumes:
+  #     - ./certs/cert.pem:/etc/osquery/fleet.crt
+  #     - ./osquery/example_osquery.flags:/etc/osquery/osquery.flags
+  #   command: osqueryd --flagfile=/etc/osquery/osquery.flags --tls_hostname=fleet.traefik.me
+  #   ulimits:
+  #     core:
+  #       hard:  1000000000
+  #       soft:  1000000000
+  #   networks:
+  #     - fleet
+  # ubuntu14-osquery:
+  #   image: "osquery/osquery:4.6.0-ubuntu14.04"
+  #   volumes:
+  #     - ./certs/cert.pem:/etc/osquery/fleet.crt
+  #     - ./osquery/example_osquery.flags:/etc/osquery/osquery.flags
+  #   command: osqueryd --flagfile=/etc/osquery/osquery.flags --tls_hostname=fleet.traefik.me
+  #   ulimits:
+  #     core:
+  #       hard:  1000000000
+  #       soft:  1000000000
+  #   networks:
+  #     - fleet
+
+  # centos8-osquery:
+  #   image: "osquery/osquery:4.6.0-centos8"
+  #   volumes:
+  #     - ./certs/cert.pem:/etc/osquery/fleet.crt
+  #     - ./osquery/example_osquery.flags:/etc/osquery/osquery.flags
+  #   command: osqueryd --flagfile=/etc/osquery/osquery.flags --tls_hostname=fleet.traefik.me
+  #   ulimits:
+  #     core:
+  #       hard:  1000000000
+  #       soft:  1000000000
+  #   networks:
+  #     - fleet
+
+  # centos7-osquery:
+  #   image: "osquery/osquery:4.6.0-centos7"
+  #   volumes:
+  #     - ./certs/cert.pem:/etc/osquery/fleet.crt
+  #     - ./osquery/example_osquery.flags:/etc/osquery/osquery.flags
+  #   command: osqueryd --flagfile=/etc/osquery/osquery.flags --tls_hostname=fleet.traefik.me
+  #   ulimits:
+  #     core:
+  #       hard:  1000000000
+  #       soft:  1000000000
+  #   networks:
+  #     - fleet
+
+  # centos6-osquery:
+  #   image: "osquery/osquery:4.6.0-centos6"
+  #   volumes:
+  #     - ./certs/cert.pem:/etc/osquery/fleet.crt
+  #     - ./osquery/example_osquery.flags:/etc/osquery/osquery.flags
+  #   command: osqueryd --flagfile=/etc/osquery/osquery.flags --tls_hostname=fleet.traefik.me
+  #   ulimits:
+  #     core:
+  #       hard:  1000000000
+  #       soft:  1000000000
+  #   networks:
+  #     - fleet
