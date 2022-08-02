@@ -70,13 +70,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - fleet
-  # filebeat:
-  #   image: docker.elastic.co/beats/filebeat:8.3.3
-  #   networks:
-  #     - fleetß
-  #   volumes:
-  #     - ./fleet/logs:/fleet/logs
-  #     - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.3.3
+    networks:
+      - fleet
+    volumes:
+      - ./fleet/logs:/fleet/logs
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./filebeat:/filebeat
 
 
 
