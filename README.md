@@ -4,9 +4,8 @@ A quick and easy method for creating a production ready FleetDM environment usin
 
 ## Prerequisites
 
-- Docker desktop
-- Node
-- fleetctl
+- Docker and Docker Compose
+- fleetctl installed with Node or downloaded from https://github.com/fleetdm/fleet/releases/latest
 
 ## Services
 
@@ -39,11 +38,20 @@ as long as the local folder is not deleted. Can be changed in docker-compose.yml
 - cd in to fleet-docker
 - switch to defcon branch
 - run "docker compose up"
+
 - Fleet is now accessible at `fleet.traefik.me`
-- Set up user and org
-- Go to Hosts
-- Add hosts
-- Select correct os
-- Copy command
-- Run with `--insecure`
-- Run generated package
+- Follow the instructions to set up Fleet. 
+
+- Go to **Hosts**
+- click "Add hosts"
+- Select the correct platform for the host you're enrolling
+- Copy the command
+- Run the command command with `--insecure` flag to prevent error when using self-signed certificate:
+
+```
+fleetctl package --type=deb --fleet-desktop --fleet-url=https://fleet.traefik.me --enroll-secret=totallysecuresecret --insecure
+```
+- Run generated package on the host. 
+- Once you have your host(s) enrolled, you can begin querying your hosts in the Fleet UI at `fleet.traefik.me/queries/manage!
+
+>  If you're enrolling multiple hosts, you can use the same installer package to enroll all hosts for a given platform. You can use network storage or copy the package to each host you'd like to install and run it. 
