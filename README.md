@@ -1,4 +1,4 @@
-# Fleet Docker Deployment
+# Fleet Docker Deployment for Defcon30 Workshop
 
 A quick and easy method for creating a production ready FleetDM environment using only Docker Compose. 
 
@@ -28,8 +28,6 @@ All services configured using the `default.env` or `service.yml` file located in
 
 All data is stored on the host machine in the folder for the service it is associate with. Data will persist after restart
 as long as the local folder is not deleted. Can be changed in docker-compose.yml by removing volume links. 
-
-
 
 ## Running Fleet
 
