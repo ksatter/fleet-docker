@@ -31,7 +31,7 @@ as long as the local folder is not deleted. Can be changed in docker-compose.yml
 
 
 
-## Usage
+## Running Fleet
 
 - Start docker
 - Clone this repository
@@ -52,6 +52,6 @@ as long as the local folder is not deleted. Can be changed in docker-compose.yml
 fleetctl package --type=deb --fleet-desktop --fleet-url=https://fleet.traefik.me --enroll-secret=totallysecuresecret --insecure
 ```
 - Run generated package on the host. 
-- Once you have your host(s) enrolled, you can begin querying your hosts in the Fleet UI at `fleet.traefik.me/queries/manage!
+- Once you have your host(s) enrolled, you can begin querying your hosts in the Fleet UI at `fleet.traefik.me/queries/manage`!
 
 >  If you're enrolling multiple hosts, you can use the same installer package to enroll all hosts for a given platform. You can use network storage or copy the package to each host you'd like to install and run it. 
