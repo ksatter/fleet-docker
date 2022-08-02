@@ -3,7 +3,7 @@
 /fleet/*
 !/fleet/default.env
 /traefik/traefik.log
-
+.DS_Store
 
 
 
