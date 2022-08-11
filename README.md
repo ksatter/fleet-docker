@@ -53,3 +53,22 @@ fleetctl package --type=deb --fleet-desktop --fleet-url=https://fleet.traefik.me
 - Once you have your host(s) enrolled, you can begin querying your hosts in the Fleet UI at `fleet.traefik.me/queries/manage`!
 
 >  If you're enrolling multiple hosts, you can use the same installer package to enroll all hosts for a given platform. You can use network storage or copy the package to each host you'd like to install and run it. 
+
+## File access denied issues with Fleet and Filebeat containers
+
+### Fleet
+1. Run it for the first time or create the mount directory fleet/logs
+2. Create (i.e. touch) and provide the right access rights (chmod 666) to the files:
+``` bash
+touch osqueryd.results.log && chmod 666 osqueryd.results.log
+touch osqueryd.status.log && chmod 666 osqueryd.status.log
+```
+3. Run fleet container again
+
+### Filebeat
+1. Run it for the first time
+2. Set the correct access rights (chmod go-w) at filebeat/:
+``` bash
+chmod go-w filebeat.yml
+```
+3. Run filebeat container again (will show an error for file filebeat-{date}.ndjson, but container will keep running)
