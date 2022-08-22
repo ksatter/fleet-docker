@@ -2,7 +2,12 @@
 !mysql/default.env
 /fleet/*
 !/fleet/default.env
+/traefik/traefik.log
+/filebeat/*
+!/filebeat/filebeat.yml
 
+
+.DS_Store
 
 
 

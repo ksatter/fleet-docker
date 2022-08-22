@@ -178,7 +178,7 @@ processors:
 logging.level: warning
 logging.to_files: true
 logging.files:
-  path: /var/log/filebeat
+  path: /filebeat
   name: filebeat
   keepfiles: 7
   permissions: 0640
