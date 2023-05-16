@@ -1,9 +1,0 @@
-tls:
-  stores:
-    default:
-      defaultCertificate:
-        certFile: /certs/cert.pem
-        keyFile: /certs/privkey.pem
-  certificates:
-    - certFile: /certs/cert.pem
-      keyFile: /certs/privkey.pem
