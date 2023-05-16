@@ -5,6 +5,7 @@
 /traefik/traefik.log
 /filebeat/*
 !/filebeat/filebeat.yml
+/certs/*
 
 
 .DS_Store
